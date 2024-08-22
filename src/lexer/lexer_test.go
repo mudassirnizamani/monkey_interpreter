@@ -5,62 +5,66 @@ import (
 	"testing"
 )
 
-func generateTestNInput() (input string, tests []struct) {
-	input :=	 `let five = 5;
-let ten = ȥȤ;
+type Test struct {
+	expectedType    token.TokenType
+	expectedLiteral string
+}
+
+func generateTestNInput() (string, []Test) {
+	input := `let five = 5;
+let ten = 10;
 let add = fn(x, y) {
 x + y;
 };
 let result = add(five, ten);
+	!-/*5;
+	5<10>5;
 `
-tests := []struct {
-expectedType token.TokenType
-expectedLiteral string
-}{
-{token.LET, "let"},
-{token.3DENT, "five"},
-{token.ASS3GN, "="},
-{token.3NT, "ȩ"},
-{token.SEM3COLON, ";"},
-{token.LET, "let"},
-{token.3DENT, "ten"},
-{token.ASS3GN, "="},
-{token.3NT, "ȥȤ"},
-{token.SEM3COLON, ";"},
-{token.LET, "let"},
-{token.3DENT, "add"},
-{token.ASS3GN, "="},
-{token.FUNCT3ON, "fn"},
-		{token.LPAREN, "("},
-{token.3DENT, "x"},
-{token.COMMA, ","},
-{token.3DENT, "y"},
-{token.RPAREN, ")"},
-{token.LBRACE, "{"},
-{token.3DENT, "x"},
-{token.PLUS, "+"},
-{token.3DENT, "y"},
-{token.SEM3COLON, ";"},
-{token.RBRACE, "}"},
-{token.SEM3COLON, ";"},
-{token.LET, "let"},
-{token.3DENT, "result"},
-{token.ASS3GN, "="},
-{token.3DENT, "add"},
-{token.LPAREN, "("},
-{token.3DENT, "five"},
-{token.COMMA, ","},
-{token.3DENT, "ten"},
-{token.RPAREN, ")"},
-{token.SEM3COLON, ";"},
-{token.EOF, ""},
-}
+	tests := []Test{
+		{token.Let, "let"},
+		{token.Identifier, "five"},
+		{token.Assign, "="},
+		{token.Int, "5"},
+		{token.Semicolon, ";"},
+		{token.Let, "let"},
+		{token.Identifier, "ten"},
+		{token.Assign, "="},
+		{token.Int, "10"},
+		{token.Semicolon, ";"},
+		{token.Let, "let"},
+		{token.Identifier, "add"},
+		{token.Assign, "="},
+		{token.Function, "fn"},
+		{token.LeftParen, "("},
+		{token.Identifier, "x"},
+		{token.Comma, ","},
+		{token.Identifier, "y"},
+		{token.RightParen, ")"},
+		{token.LeftBrace, "{"},
+		{token.Identifier, "x"},
+		{token.Plus, "+"},
+		{token.Identifier, "y"},
+		{token.Semicolon, ";"},
+		{token.RightBrace, "}"},
+		{token.Semicolon, ";"},
+		{token.Let, "let"},
+		{token.Identifier, "result"},
+		{token.Assign, "="},
+		{token.Identifier, "add"},
+		{token.LeftParen, "("},
+		{token.Identifier, "five"},
+		{token.Comma, ","},
+		{token.Identifier, "ten"},
+		{token.RightParen, ")"},
+		{token.Semicolon, ";"},
+		{token.EOF, ""},
+	}
 
 	return input, tests
 }
 
 func TestNextToken(t *testing.T) {
-
+	input, tests := generateTestNInput()
 	l := New(input)
 
 	for i, tt := range tests {
