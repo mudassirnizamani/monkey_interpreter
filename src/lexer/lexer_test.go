@@ -17,9 +17,21 @@ let add = fn(x, y) {
 x + y;
 };
 let result = add(five, ten);
-	!-/*5;
-	5<10>5;
+
+!-/*5;
+5<10>5;
+
+if (5<10) {
+		return true;
+	} else {
+	return false;
+	}
 `
+
+	//
+	//
+	// 10 == 10;
+
 	tests := []Test{
 		{token.Let, "let"},
 		{token.Identifier, "five"},
@@ -57,7 +69,46 @@ let result = add(five, ten);
 		{token.Identifier, "ten"},
 		{token.RightParen, ")"},
 		{token.Semicolon, ";"},
-		{token.EOF, ""},
+		{token.Bang, "!"},
+		{token.Minus, "-"},
+		{token.Slash, "/"},
+		{token.Asterisk, "*"},
+		{token.Int, "5"},
+		{token.Semicolon, ";"},
+
+		{token.Int, "5"},
+		{token.LessThan, "<"},
+		{token.Int, "10"},
+		{token.GreaterThan, ">"},
+		{token.Int, "5"},
+		{token.Semicolon, ";"},
+
+		{token.If, "if"},
+		{token.LeftParen, "("},
+		{token.Int, "5"},
+		{token.LessThan, "<"},
+		{token.Int, "10"},
+		{token.RightParen, ")"},
+		{token.LeftBrace, "{"},
+		{token.Return, "return"},
+		{token.True, "true"},
+		{token.Semicolon, ";"},
+		{token.RightBrace, "}"},
+		{token.Else, "else"},
+		{token.LeftBrace, "{"},
+		{token.Return, "return"},
+		//
+		// 	{token.False, "false"},
+		// 	{token.Semicolon, ";"},
+		// 	{token.RightBrace, "}"},
+		// 	{token.Int, "10"},
+		// 	{token.Eq, "=="},
+		// 	{token.Semicolon, ";"},
+		// 	{token.Int, "10"},
+		// 	{token.NotEq, "!="},
+		// 	{token.Int, "9"},
+		// 	{token.Semicolon, ";"},
+		// 	{token.EOF, ""},
 	}
 
 	return input, tests
