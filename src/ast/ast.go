@@ -8,12 +8,12 @@ type Node interface {
 
 type Statement interface {
 	Node
-	statementNode() string
+	statementNode()
 }
 
 type Expression interface {
 	Node
-	expressionNode() string
+	expressionNode()
 }
 
 type Program struct {
@@ -22,9 +22,12 @@ type Program struct {
 
 type LetStatement struct {
 	Token token.Token // the token.LET Token
-	Name *Indentifier
+	Name  *Indentifier
 	Value Expression
 }
+
+func (ls *LetStatement) statementNode()         {}
+func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
 type Indentifier struct {
 	Token token.Token
@@ -32,7 +35,6 @@ type Indentifier struct {
 }
 
 func (i *Indentifier) expressionNode() {}
-
 func (i *Indentifier) TokenLiteral() string {
 	return i.Token.Literal
 }
@@ -44,5 +46,3 @@ func (p *Program) TokenLiteral() string {
 		return ""
 	}
 }
-
-
