@@ -8,7 +8,7 @@ import (
 )
 
 type Parser struct {
-	l *lexer.Lexer
+	l      *lexer.Lexer
 	errors []string
 
 	curToken  token.Token
@@ -48,6 +48,8 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.Let:
 		return p.parseLetStatement()
+	case token.Return:
+		return p.parseReturnStatement()
 	default:
 		return nil
 	}
@@ -92,11 +94,23 @@ func (p *Parser) exceptPeek(t token.TokenType) bool {
 	}
 }
 
-func (p *Parser ) Errors() []string {
+func (p *Parser) Errors() []string {
 	return p.errors
 }
 
 func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: p.curToken}
+	p.nextToken()
+
+	// INFO: We are skipping the tokens untill we encounter a semicolon
+	for !p.currTokenIs(token.Semicolon) {
+		p.nextToken()
+	}
+
+	return stmt
 }
