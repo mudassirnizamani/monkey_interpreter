@@ -1,9 +1,13 @@
 package ast
 
-import "monkey_interpreter/src/token"
+import (
+	"bytes"
+	"monkey_interpreter/src/token"
+)
 
 type Node interface {
 	TokenLiteral() string
+	String() string
 }
 
 type Statement interface {
@@ -20,10 +24,36 @@ type Program struct {
 	Statements []Statement
 }
 
+func (p *Program) String() string {
+	var out bytes.Buffer
+
+	for _, s := range p.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
 type LetStatement struct {
 	Token token.Token // the token.LET Token
 	Name  *Indentifier
 	Value Expression
+}
+
+func (ls *LetStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(ls.TokenLiteral() + " ")
+	out.WriteString(ls.Name.String())
+	out.WriteString(" = ")
+
+	if ls.Value != nil {
+		out.WriteString(ls.Value.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
 }
 
 func (ls *LetStatement) statementNode()       {}
@@ -34,12 +64,30 @@ type ReturnStatement struct {
 	RetrunValue Expression
 }
 
-func (rs *ReturnStatement) statementNode()      {}
+func (rs *ReturnStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString(rs.TokenLiteral() + " ")
+
+	if rs.RetrunValue != nil {
+		out.WriteString(rs.RetrunValue.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
+}
+
+func (rs *ReturnStatement) statementNode()       {}
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
 
 type Indentifier struct {
 	Token token.Token
 	Value string
+}
+
+func (i *Indentifier) String() string {
+	return i.Value
 }
 
 func (i *Indentifier) expressionNode() {}
@@ -55,3 +103,18 @@ func (p *Program) TokenLiteral() string {
 	}
 }
 
+type ExpressionStatement struct {
+	Token      token.Token
+	Expression Expression
+}
+
+func (es *ExpressionStatement) statementNode()       {}
+func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
+
+func (es *ExpressionStatement) String() string {
+	if es.Expression != nil {
+		return es.Expression.String()
+	}
+
+	return ""
+}
